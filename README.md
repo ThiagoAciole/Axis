@@ -34,11 +34,10 @@ Com uma interface elegante e intuitiva, ele permite organizar, visualizar e joga
 
 ## 🖥️ Como usar
 
-1. Baixe o projeto e execute o **`build.bat`** ele irar gerar uma pasta chamada `/release`
-2. Abra a Pasta `/release` e Execute o launcher normalmente  
-3. Na primeira inicialização, o **DuckStation** e os arquivos necessários serão configurados automaticamente  
-4. O app detectará seus jogos em `/roms` ou oferecerá o download de uma lista inicial  
-5. Clique em qualquer jogo da biblioteca para iniciar a jogatina 🎮  
+1. Baixe o projeto e execute o **`Axis.exe`**
+2. Na primeira inicialização, o **DuckStation** e os arquivos necessários serão configurados automaticamente  
+3. O app detectará seus jogos em `/roms` ou oferecerá uma lista de alguns jogos em PT-BR para baixar
+4. Clique em qualquer jogo da biblioteca para iniciar a jogatina 🎮  
 
 ---
 

@@ -200,7 +200,7 @@ def preparar_emulador(progress_callback=None, status_callback=None):
         return
 
     if status_callback:
-        status_callback("OneLauncher instalado e pronto ✅")
+        status_callback("Axis instalado e pronto")
 
 
 # ===========================

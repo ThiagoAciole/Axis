@@ -54,7 +54,6 @@ pip-wheel-metadata/
 # ============================================================
 
 # Executáveis e builds
-*.exe
 *.dll
 *.so
 *.dylib

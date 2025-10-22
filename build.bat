@@ -24,8 +24,7 @@ set "MAIN_FILE=%BASE_DIR%\app\main.py"
 :: Saídas
 set "BUILD_PATH=%BASE_DIR%\build"
 set "DIST_PATH=%BASE_DIR%\dist"
-set "RELEASE_PATH=%BASE_DIR%\release"
-set "OUTPUT_EXE=%RELEASE_PATH%\%APP_NAME%.exe"
+set "OUTPUT_EXE=%BASE_DIR%\%APP_NAME%.exe"
 
 :: ============================================================
 :: 🧹 Limpeza inicial
@@ -33,8 +32,8 @@ set "OUTPUT_EXE=%RELEASE_PATH%\%APP_NAME%.exe"
 echo 🧹 Limpando builds anteriores...
 if exist "%BUILD_PATH%" rd /s /q "%BUILD_PATH%"
 if exist "%DIST_PATH%" rd /s /q "%DIST_PATH%"
-if exist "%RELEASE_PATH%" rd /s /q "%RELEASE_PATH%"
-if exist "%BASE_DIR%\OneLauncher.spec" del /f /q "%BASE_DIR%\OneLauncher.spec"
+if exist "%OUTPUT_EXE%" del /f /q "%OUTPUT_EXE%"
+if exist "%BASE_DIR%\%APP_NAME%.spec" del /f /q "%BASE_DIR%\%APP_NAME%.spec"
 pyinstaller --clean >nul 2>&1
 
 :: ============================================================
@@ -70,7 +69,7 @@ pyinstaller ^
  --windowed ^
  --name "%APP_NAME%" ^
  --icon "%ICON_PATH%" ^
- --distpath "%DIST_PATH%" ^
+ --distpath "%BASE_DIR%" ^
  --workpath "%BUILD_PATH%" ^
  --specpath "%BUILD_PATH%" ^
  --add-data "%BASE_DIR%\app\assets;app/assets" ^
@@ -82,19 +81,11 @@ pyinstaller ^
  "%MAIN_FILE%"
 
 :: ============================================================
-:: 📦 Mover dist -> release
-:: ============================================================
-if exist "%DIST_PATH%" (
-    echo 📦 Movendo pasta dist -> release...
-    if exist "%RELEASE_PATH%" rd /s /q "%RELEASE_PATH%"
-    move "%DIST_PATH%" "%RELEASE_PATH%" >nul
-)
-
-:: ============================================================
 :: 🧽 Limpeza final
 :: ============================================================
-if exist "%BASE_DIR%\%APP_NAME%.spec" del /f /q "%BASE_DIR%\%APP_NAME%.spec"
 if exist "%BUILD_PATH%" rd /s /q "%BUILD_PATH%"
+if exist "%DIST_PATH%" rd /s /q "%DIST_PATH%"
+if exist "%BASE_DIR%\%APP_NAME%.spec" del /f /q "%BASE_DIR%\%APP_NAME%.spec"
 
 :: ============================================================
 :: ✅ Resultado final
@@ -102,7 +93,7 @@ if exist "%BUILD_PATH%" rd /s /q "%BUILD_PATH%"
 if exist "%OUTPUT_EXE%" (
     echo.
     echo ✅ Build concluído com sucesso!
-    echo 📁 Executável criado em:
+    echo 📁 Executável criado na raiz:
     echo     "%OUTPUT_EXE%"
 ) else (
     echo.

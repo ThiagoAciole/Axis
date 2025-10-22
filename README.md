@@ -3,6 +3,13 @@
 O **Axis** é um gerenciador de jogos de **PlayStation 1** desenvolvido em **Python**, com foco em **simplicidade**, **rapidez** e **experiência moderna**.  
 Com uma interface elegante e intuitiva, ele permite organizar, visualizar e jogar seus clássicos do PS1 com apenas alguns cliques.
 
+<p align="center">
+ <img width="1000" height="400" alt="axis" src="https://github.com/user-attachments/assets/aa00a918-197c-4ef9-9460-0fd8b926eeba" />
+</p>
+
+
+
+
 ---
 
 ## 🚀 Funcionalidades
@@ -27,8 +34,8 @@ Com uma interface elegante e intuitiva, ele permite organizar, visualizar e joga
 
 ## 🖥️ Como usar
 
-1. Baixe o projeto e execute o **`build.bat`**
-2. Abra a Pasta Release e Execute o launcher normalmente  
+1. Baixe o projeto e execute o **`build.bat`** ele irar gerar uma pasta chamada `/release`
+2. Abra a Pasta `/release` e Execute o launcher normalmente  
 3. Na primeira inicialização, o **DuckStation** e os arquivos necessários serão configurados automaticamente  
 4. O app detectará seus jogos em `/roms` ou oferecerá o download de uma lista inicial  
 5. Clique em qualquer jogo da biblioteca para iniciar a jogatina 🎮  
@@ -39,11 +46,10 @@ Com uma interface elegante e intuitiva, ele permite organizar, visualizar e joga
 
 ```
 📁 Axis/
- ┣ 📁 app/
  ┣ 📁 roms/           → Onde ficam os jogos (.chd, .bin, .iso)
  ┣ 📁 covers/         → Capas dos jogos (automáticas ou personalizadas)
  ┣ 📁 game/           → Emulador DuckStation + configurações
- ┗ 📄 Axis.exe
+ ┗ 🟪 Axis.exe
 ```
 
 ---

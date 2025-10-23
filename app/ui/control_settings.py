@@ -5,8 +5,10 @@ import threading
 import customtkinter as ctk
 import pygame
 from PIL import Image
+from utils.constants import *
+from utils.icons import load_button_image, load_icons
+from utils.paths import get_asset_path, get_emulator_path
 from utils.theme import *
-from utils.utils import get_asset_path, get_emulator_path, load_ctk_image, load_icons, load_button_image
 
 
 class ControlSettings:
@@ -72,12 +74,30 @@ class ControlSettings:
             os.makedirs(os.path.dirname(self.settings_path), exist_ok=True)
             empty_pad = {
                 "type": "AnalogController",
-                "up": "", "right": "", "down": "", "left": "",
-                "triangle": "", "circle": "", "cross": "", "square": "",
-                "select": "", "start": "",
-                "l1": "", "r1": "", "l2": "", "r2": "", "l3": "", "r3": "",
-                "lleft": "", "lright": "", "ldown": "", "lup": "",
-                "rleft": "", "rright": "", "rdown": "", "rup": "",
+                "up": "",
+                "right": "",
+                "down": "",
+                "left": "",
+                "triangle": "",
+                "circle": "",
+                "cross": "",
+                "square": "",
+                "select": "",
+                "start": "",
+                "l1": "",
+                "r1": "",
+                "l2": "",
+                "r2": "",
+                "l3": "",
+                "r3": "",
+                "lleft": "",
+                "lright": "",
+                "ldown": "",
+                "lup": "",
+                "rleft": "",
+                "rright": "",
+                "rdown": "",
+                "rup": "",
             }
             config["Pad1"] = empty_pad
             with open(self.settings_path, "w", encoding="utf-8") as f:
@@ -92,7 +112,7 @@ class ControlSettings:
                 print(f"  {k} = {v}")
 
     def save_mapping(self):
-      
+
         try:
             config = configparser.ConfigParser()
             config.optionxform = str  # mantém lowercase
@@ -144,7 +164,6 @@ class ControlSettings:
         except Exception as e:
             print(f"[ERRO] Falha ao salvar configurações: {e}")
 
-
     # ==================================
     # 🧱 Interface
     # ==================================
@@ -177,7 +196,9 @@ class ControlSettings:
         self.device_menu.pack(side="left", fill="x", padx=(0, self.px // 2), pady=self.py // 2)
 
         def create_icon_button(icon, command):
-            lbl = ctk.CTkLabel(self.header, text="", image=icon, fg_color="transparent", cursor="hand2")
+            lbl = ctk.CTkLabel(
+                self.header, text="", image=icon, fg_color="transparent", cursor="hand2"
+            )
             lbl.pack(side="right", padx=self.px // 3)
             lbl.bind("<Button-1>", lambda e: command())
 
@@ -196,12 +217,12 @@ class ControlSettings:
 
         self.right = ctk.CTkFrame(self.body, fg_color=BACKGROUND_DARK)
         self.right.pack(side="right", fill="y", padx=(self.px // 2, self.px), pady=self.py)
-        RBUTTONS = (28,32)
+        rbuttons = (28, 32)
         self.icons = {
-            "l1": load_button_image("l1.png", RBUTTONS),
-            "l2": load_button_image("l2.png", RBUTTONS),
-            "r1": load_button_image("r1.png", RBUTTONS),
-            "r2": load_button_image("r2.png", RBUTTONS),
+            "l1": load_button_image("l1.png", rbuttons),
+            "l2": load_button_image("l2.png", rbuttons),
+            "r1": load_button_image("r1.png", rbuttons),
+            "r2": load_button_image("r2.png", rbuttons),
             "cross": load_button_image("cross.png", (28, 28)),
             "circle": load_button_image("circle.png", (28, 28)),
             "square": load_button_image("square.png", (28, 28)),
@@ -227,23 +248,40 @@ class ControlSettings:
             self.create_icon_button(self.right, name)
 
         self.footer = ctk.CTkFrame(self.root, fg_color=BACKGROUND)
-        self.footer.pack(side="bottom", fill="x")
+        self.footer.pack(side="bottom", fill="both")
 
         button_frame = ctk.CTkFrame(self.footer, fg_color="transparent")
-        button_frame.pack(side="right", pady=(int(self.py * 1.5), int(self.py * 1.5)), padx=(self.px, int(self.px * 1.5)))
+        button_frame.pack(
+            side="right",
+            pady=(int(self.py * 1.5), int(self.py * 1.5)),
+            padx=(self.px, int(self.px * 1.5)),
+        )
 
-        ctk.CTkButton(button_frame, text="Confirmar", fg_color=PRIMARY_COLOR,
-                      hover_color=PRIMARY_HOVER, text_color=TEXT_PRIMARY,
-                      font=(FONT_FAMILY, 15, FONT_WEIGHT_BOLD),
-                      corner_radius=10, height=40, width=120,
-                      command=self.confirm).pack(side="right", padx=(self.px // 2, 0))
+        ctk.CTkButton(
+            button_frame,
+            text="Confirmar",
+            fg_color=PRIMARY_COLOR,
+            hover_color=PRIMARY_HOVER,
+            text_color=TEXT_PRIMARY,
+            font=(FONT_FAMILY, 15, FONT_WEIGHT_BOLD),
+            corner_radius=10,
+            height=40,
+            width=120,
+            command=self.confirm,
+        ).pack(side="right", padx=(self.px // 2, 0))
 
-        
-        ctk.CTkButton(button_frame, text="Cancelar", fg_color=SURFACE_LIGHT,
-                      hover_color=ERROR, text_color=TEXT_PRIMARY,
-                      font=(FONT_FAMILY, 15, FONT_WEIGHT_BOLD),
-                      corner_radius=10, height=40, width=120,
-                      command=self.on_close).pack(side="right", padx=(self.px // 2, 0))
+        ctk.CTkButton(
+            button_frame,
+            text="Cancelar",
+            fg_color=SURFACE_LIGHT,
+            hover_color=ERROR,
+            text_color=TEXT_PRIMARY,
+            font=(FONT_FAMILY, 15, FONT_WEIGHT_BOLD),
+            corner_radius=10,
+            height=40,
+            width=120,
+            command=self.on_close,
+        ).pack(side="right", padx=(self.px // 2, 0))
 
         self.status_label = ctk.CTkLabel(
             self.footer,
@@ -276,7 +314,9 @@ class ControlSettings:
         frame.pack(pady=int(self.py * 0.6))
 
         icon = self.icons.get(name.lower())
-        ctk.CTkLabel(frame, image=icon, text="", fg_color="transparent").pack(side="left", padx=(0, int(self.px * 0.4)))
+        ctk.CTkLabel(frame, image=icon, text="", fg_color="transparent").pack(
+            side="left", padx=(0, int(self.px * 0.4))
+        )
 
         value = self.mapping.get(name.lower(), "")
         display = value.split("/", 1)[-1] if "/" in value else value or "Press Button"
@@ -295,7 +335,6 @@ class ControlSettings:
         )
         btn.pack(side="left")
         self.buttons[name.lower()] = btn
-
 
     # ==================================
     # 🎮 Captura e Pulso visual
@@ -432,6 +471,7 @@ class ControlSettings:
                 self.root.after(3000, lambda: fade_out(1))
             elif step == 1:
                 self.status_label.configure(text="")
+
         fade_out()
 
     def on_close(self):
@@ -449,7 +489,9 @@ class ControlSettings:
 
         pad_names = [f"{i}: {js.get_name()}" for i, js in enumerate(self.joysticks)]
         self.device_menu.configure(values=pad_names or ["Nenhum joystick detectado"])
-        self.status_label.configure(text="🔄 Lista de controles atualizada.", text_color=PRIMARY_HOVER)
+        self.status_label.configure(
+            text="🔄 Lista de controles atualizada.", text_color=PRIMARY_HOVER
+        )
         self.root.after(2500, lambda: self.status_label.configure(text=""))
 
     def auto_configure(self):
@@ -481,11 +523,15 @@ class ControlSettings:
             for name, btn in self.buttons.items():
                 if name in self.mapping:
                     btn.configure(text=self.mapping[name].split("/")[-1])
-            self.status_label.configure(text=f"⚙️ Controle '{js.get_name()}' configurado automaticamente.", text_color=SUCCESS)
+            self.status_label.configure(
+                text=f"⚙️ Controle '{js.get_name()}' configurado automaticamente.",
+                text_color=SUCCESS,
+            )
             self.root.after(2500, lambda: self.status_label.configure(text=""))
         except Exception as e:
             print(f"[ERRO] Falha ao configurar controle automaticamente: {e}")
             self.status_label.configure(text="❌ Erro ao configurar controle.", text_color=ERROR)
+
     # ==================================
     # 🔁 Resize dinâmico
     # ==================================
@@ -504,9 +550,9 @@ class ControlSettings:
         self.py = int(h * 0.02)
 
         # atualiza header/body/footer paddings
-        self.header.configure(padx=self.px, pady=(self.py, self.py // 2))
-        self.body.configure(padx=self.px, pady=self.py)
-        self.footer.configure(pady=(self.py, self.py // 2))
+        self.header.pack_configure(padx=self.px, pady=(self.py, self.py // 2))
+        self.body.pack_configure(padx=self.px, pady=self.py)
+        self.footer.pack_configure(pady=(self.py, self.py // 12))
 
         # width do optionmenu acompanha
         self.device_menu.configure(width=int(w * 0.55))

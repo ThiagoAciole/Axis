@@ -4,44 +4,50 @@ import threading
 import customtkinter as ctk
 from PIL import Image
 from ui.home import start_home
+from utils.constants import *
+from utils.paths import get_asset_path, get_cover_path, get_rom_path
+from utils.setup import prepare_emulator
 from utils.theme import *
-from utils.utils import get_asset_path, get_capa_path, get_rom_path, preparar_emulador
 
 
 def start_init():
-    tela = create_window(
-        title="Axis",
+    window = create_window(
+        title=APP_NAME,
         width=600,
         height=400,
         min_width=600,
         min_height=400,
         resizable=False,
     )
+
     # === CONTAINER PRINCIPAL ===
-    container = ctk.CTkFrame(tela, fg_color=TRANSPARENT)
+    container = ctk.CTkFrame(window, fg_color=TRANSPARENT)
     container.pack(expand=True, fill="both")
 
-    # === LOGO CENTRAL ===
+    # === LOGO OU TEXTO PADRÃO ===
     logo_path = get_asset_path("logo.png")
     if os.path.exists(logo_path):
-        logo_img = ctk.CTkImage(Image.open(logo_path), size=(140, 140))
-        ctk.CTkLabel(container, image=logo_img, text="").pack(expand=True, pady=(40, 10))
+        logo_image = ctk.CTkImage(Image.open(logo_path), size=(140, 140))
+        ctk.CTkLabel(container, image=logo_image, text="").pack(expand=True, pady=(40, 10))
     else:
         ctk.CTkLabel(
             container,
-            text="PSLabz",
+            text=DEFAULT_LABEL,
             font=(FONT_FAMILY, FONT_SIZE_LG, "bold"),
             text_color=PRIMARY_COLOR,
         ).pack(expand=True, pady=(40, 10))
 
     # === STATUS LABEL ===
     status_label = ctk.CTkLabel(
-        container, text="", text_color=TEXT_PRIMARY, font=(FONT_FAMILY, FONT_SIZE_MD)
+        container,
+        text=STATUS_PREPARING,
+        text_color=TEXT_PRIMARY,
+        font=(FONT_FAMILY, FONT_SIZE_MD),
     )
     status_label.pack(pady=(10, 8))
 
-    # === PROGRESS BAR ===
-    progressbar = ctk.CTkProgressBar(
+    # === BARRA DE PROGRESSO ===
+    progress_bar = ctk.CTkProgressBar(
         container,
         width=400,
         height=6,
@@ -50,40 +56,45 @@ def start_init():
         progress_color=PRIMARY_COLOR,
         mode="indeterminate",
     )
-    progressbar.pack(pady=(0, 20))
-    progressbar.start()
+    progress_bar.pack(pady=(0, 20))
+    progress_bar.start()
 
-    # === Atualizações visuais ===
-    def update_progress(value):
-        tela.after(0, lambda: progressbar.set(value))
+    # === CALLBACKS VISUAIS ===
+    def update_progress(value: float):
+        window.after(0, lambda: progress_bar.set(value))
 
-    def update_status(text):
-        tela.after(0, lambda: status_label.configure(text=text))
+    def update_status(text: str):
+        window.after(0, lambda: status_label.configure(text=text))
 
-    # === Fluxo de inicialização ===
-    def preparar():
+    # === FLUXO DE INICIALIZAÇÃO ===
+    def prepare():
         os.makedirs(get_rom_path(""), exist_ok=True)
-        os.makedirs(get_capa_path(""), exist_ok=True)
-        preparar_emulador(progress_callback=update_progress, status_callback=update_status)
+        os.makedirs(get_cover_path(""), exist_ok=True)
 
-        def fechar_tela():
+        update_status(STATUS_LOADING)
+        prepare_emulator(progress_callback=update_progress, status_callback=update_status)
+
+        def close_window():
             try:
-                progressbar.stop()
-            except:
+                progress_bar.stop()
+            except Exception:
                 pass
+
             try:
-                for after_id in tela.tk.call("after", "info"):
-                    tela.after_cancel(after_id)
-            except:
+                for after_id in window.tk.call("after", "info"):
+                    window.after_cancel(after_id)
+            except Exception:
                 pass
-            if tela.winfo_exists():
-                tela.destroy()
+
+            if window.winfo_exists():
+                window.destroy()
             start_home()
 
-        tela.after(1000, fechar_tela)
+        # Fecha a janela após 1 segundo
+        window.after(1000, close_window)
 
-    threading.Thread(target=preparar, daemon=True).start()
-    tela.mainloop()
+    threading.Thread(target=prepare, daemon=True).start()
+    window.mainloop()
 
 
 if __name__ == "__main__":

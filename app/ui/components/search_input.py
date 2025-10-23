@@ -26,7 +26,7 @@ class SearchInput(ctk.CTkFrame):
         self.search_var = StringVar(value=placeholder)
         self._bind_id = None
 
-        from utils.utils import load_icons
+        from utils.icons import load_icons
 
         icons = load_icons()
         icon_search = icons.get("search")

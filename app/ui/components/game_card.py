@@ -3,8 +3,9 @@ import os
 import customtkinter as ctk
 from customtkinter import CTkImage
 from PIL import Image, ImageOps
+from utils.icons import load_icons
+from utils.paths import get_asset_path, get_cover_path
 from utils.theme import *
-from utils.utils import get_asset_path, get_capa_path, load_icons
 
 
 class GameCard(ctk.CTkFrame):
@@ -13,7 +14,7 @@ class GameCard(ctk.CTkFrame):
         parent,
         title: str,
         image: str,
-        platform: str = "ps2",
+        platform: str = "ps1",
         on_click=None,
         on_edit=None,
         on_delete=None,
@@ -40,29 +41,29 @@ class GameCard(ctk.CTkFrame):
         self.root = self.winfo_toplevel()
 
         # === Caminhos ===
-        capa_path = get_capa_path(self.image)
-        if not os.path.exists(capa_path):
-            capa_path = get_capa_path("default.png")
+        cover_path = get_cover_path(self.image)
+        if not os.path.exists(cover_path):
+            cover_path = get_cover_path("default.png")
 
-        mold_path = get_asset_path("ps1_path.png")
-        if not os.path.exists(mold_path):
-            raise FileNotFoundError(f"Moldura não encontrada: {mold_path}")
+        frame_path = get_asset_path("ps1_path.png")
+        if not os.path.exists(frame_path):
+            raise FileNotFoundError(f"Frame not found: {frame_path}")
 
         # === Carrega imagens ===
-        capa = Image.open(capa_path).convert("RGBA")
-        moldura = Image.open(mold_path).convert("RGBA")
+        cover = Image.open(cover_path).convert("RGBA")
+        frame = Image.open(frame_path).convert("RGBA")
 
         # === Redimensiona proporcionalmente (fit) ===
         iw, ih = width - 10, height - 10
-        capa_fit = ImageOps.contain(capa, (iw, ih), Image.LANCZOS)
+        cover_fit = ImageOps.contain(cover, (iw, ih), Image.LANCZOS)
 
         # === Centraliza a imagem dentro do espaço disponível ===
         composed = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-        x = (width - capa_fit.width) // 2
-        y = (height - capa_fit.height) // 2
-        composed.paste(capa_fit, (x, y))
-        moldura = moldura.resize((width, height), Image.LANCZOS)
-        composed.paste(moldura, (0, 0), mask=moldura)
+        x = (width - cover_fit.width) // 2
+        y = (height - cover_fit.height) // 2
+        composed.paste(cover_fit, (x, y))
+        frame = frame.resize((width, height), Image.LANCZOS)
+        composed.paste(frame, (0, 0), mask=frame)
 
         # === Cria imagem final ===
         self.tk_image = CTkImage(light_image=composed, dark_image=composed, size=(width, height))
@@ -87,11 +88,13 @@ class GameCard(ctk.CTkFrame):
         self.button.pack(expand=True, fill="both")
 
         # === Bind botão direito ===
-        self.button.bind("<Button-3>", self.abrir_menu)
+        self.button.bind("<Button-3>", self.open_context_menu)
 
-    def abrir_menu(self, event):
-        """Menu de contexto (botão direito)."""
+    # === Menu de contexto (botão direito) ===
+    def open_context_menu(self, event):
         root = self.root
+
+        # Fecha qualquer menu existente
         for w in root.winfo_children():
             if isinstance(w, ctk.CTkFrame) and getattr(w, "is_context_menu", False):
                 w.destroy()
@@ -108,7 +111,7 @@ class GameCard(ctk.CTkFrame):
             ctk.CTkButton(
                 menu,
                 image=icon_edit,
-                text="Alterar Capa do Jogo",
+                text="Change Game Cover",
                 compound="left",
                 font=("Segoe UI", 13, "bold"),
                 text_color="white",
@@ -125,7 +128,7 @@ class GameCard(ctk.CTkFrame):
             ctk.CTkButton(
                 menu,
                 image=icon_trash,
-                text="Excluir Jogo",
+                text="Delete Game",
                 compound="left",
                 font=("Segoe UI", 13, "bold"),
                 text_color="#ff6666",
@@ -138,23 +141,24 @@ class GameCard(ctk.CTkFrame):
                 command=lambda: (menu.destroy(), self.on_delete(self.title)),
             ).pack(padx=1, pady=(3, 6))
 
-        # === Posicionamento ===
+        # === Posicionamento do menu ===
         widget = event.widget
         widget_x = widget.winfo_rootx() - root.winfo_rootx()
         widget_y = widget.winfo_rooty() - root.winfo_rooty()
         widget_w = widget.winfo_width()
         menu_w = menu.winfo_reqwidth()
-        janela_w = root.winfo_width()
+        window_w = root.winfo_width()
 
         pos_x = (
             max(widget_x - menu_w - 10, 0)
-            if widget_x + widget_w + menu_w + 20 > janela_w
+            if widget_x + widget_w + menu_w + 20 > window_w
             else widget_x + widget_w + 10
         )
 
         menu.place(x=pos_x, y=widget_y)
 
-        def fechar_menu(ev):
+        # Fecha o menu ao clicar fora
+        def close_menu(ev):
             if not (
                 menu.winfo_x()
                 <= ev.x_root - root.winfo_rootx()
@@ -166,4 +170,4 @@ class GameCard(ctk.CTkFrame):
                 menu.destroy()
                 root.unbind("<Button-1>")
 
-        root.bind("<Button-1>", fechar_menu)
+        root.bind("<Button-1>", close_menu)

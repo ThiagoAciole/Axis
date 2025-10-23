@@ -1,5 +1,6 @@
 import customtkinter as ctk
-from utils.theme import * 
+from utils.theme import *
+
 
 def create_footer(parent):
     footer = ctk.CTkFrame(parent, fg_color=BACKGROUND, height=40)

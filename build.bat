@@ -95,6 +95,9 @@ if exist "%OUTPUT_EXE%" (
     echo ✅ Build concluído com sucesso!
     echo 📁 Executável criado na raiz:
     echo     "%OUTPUT_EXE%"
+    echo.
+    echo ▶️  Abrindo o aplicativo...
+    start "" "%OUTPUT_EXE%"
 ) else (
     echo.
     echo ❌ ERRO: Executável não foi criado.
